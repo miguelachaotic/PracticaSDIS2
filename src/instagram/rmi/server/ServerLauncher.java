@@ -17,7 +17,7 @@ public class ServerLauncher {
         Map<String, String> passwords = new HashMap<>();
         Map<String, Media> directory = new HashMap<>();
 
-        InstagramServerImpl instagramServer = new InstagramServerImpl();
+        //InstagramServerImpl instagramServer = new InstagramServerImpl();
 
         Registry registry = LocateRegistry.createRegistry(1099);
 
