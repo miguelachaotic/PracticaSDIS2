@@ -8,8 +8,12 @@ import instagram.stream.ClientStream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 
-public class InstagramClientImpl implements InstagramClient {
+public class InstagramClientImpl extends java.rmi.server.UnicastRemoteObject implements InstagramClient {
     private Thread playerThread;
+
+    public InstagramClientImpl() throws java.rmi.RemoteException{
+        super();
+    }
 
     @Override
     public boolean launchMediaPlayer(Media media) throws RemoteException, FileNotFoundException {
