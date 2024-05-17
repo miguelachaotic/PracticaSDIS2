@@ -3,6 +3,7 @@ package instagram.rmi.common;
 import java.io.FileNotFoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
 import instagram.media.Media;
 
 /**
