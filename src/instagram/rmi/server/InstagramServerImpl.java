@@ -6,6 +6,8 @@ import instagram.rmi.common.InstagramServer;
 import instagram.media.Media;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
@@ -83,12 +85,12 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public String hello() {
+    public String hello() throws RemoteException{
         return Messages.MSG_BIENVENIDA;
     }
 
     @Override
-    public String auth(String username, String password) {
+    public String auth(String username, String password) throws RemoteException{
         if (username == null || password == null)
             throw new IllegalArgumentException();
         synchronized (passwords) {
@@ -103,14 +105,14 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public void add2L(Media media) {
+    public void add2L(Media media) throws RemoteException{
         if (media == null)
             throw new IllegalArgumentException();
         add2L(media, DEFAULTQUEUE);
     }
 
     @Override
-    public void add2L(Media media, String username) {
+    public void add2L(Media media, String username) throws RemoteException{
         if (media == null || username == null)
             throw new IllegalArgumentException();
         synchronized (directory) {
@@ -124,12 +126,12 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public Media readL() {
+    public Media readL() throws RemoteException{
         return readL(DEFAULTQUEUE);
     }
 
     @Override
-    public Media readL(String username) {
+    public Media readL(String username) throws RemoteException{
         if (username == null)
             throw new IllegalArgumentException();
         synchronized (contents) {
@@ -139,12 +141,12 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public Media peekL() {
+    public Media peekL() throws RemoteException{
         return peekL(DEFAULTQUEUE);
     }
 
     @Override
-    public Media peekL(String username) {
+    public Media peekL(String username) throws RemoteException{
         if (username == null)
             throw new IllegalArgumentException();
         synchronized (contents) {
@@ -153,7 +155,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public String deleteL(String username) {
+    public String deleteL(String username) throws RemoteException{
         if (username == null)
             throw new IllegalArgumentException();
         if (username.equals(DEFAULTQUEUE))
@@ -166,8 +168,9 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public String getDirectoryList() {
+    public String getDirectoryList() throws RemoteException{
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append('[');
         synchronized (directory) {
             if (directory.isEmpty()) return Messages.EMPTYDIRECTORY;
             directory.forEach((k, v) -> stringBuilder.append(
@@ -176,11 +179,12 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
         }
         stringBuilder.replace(stringBuilder.length() - 2,
                 stringBuilder.length(), "");
+        stringBuilder.append(']');
         return stringBuilder.toString();
     }
 
     @Override
-    public Media retrieveMedia(String mediaID) throws FileNotFoundException {
+    public Media retrieveMedia(String mediaID) throws FileNotFoundException, RemoteException {
         if (mediaID == null)
             throw new IllegalArgumentException();
         synchronized (directory) {
@@ -191,23 +195,26 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public String addLike(String mediaID) throws FileNotFoundException {
+    public String addLike(String mediaID) throws FileNotFoundException, RemoteException {
         Media requestedMedia = retrieveMedia(mediaID);
         requestedMedia.addLike();
         return Messages.ADDEDLIKE;
     }
 
     @Override
-    public String addComment(String mediaID, String comment) throws FileNotFoundException {
-        if (comment == null || comment.isEmpty() || comment.length() > 100)
+    public String addComment(String mediaID, String comment)
+            throws FileNotFoundException, RemoteException {
+        if (comment == null || comment.isEmpty())
             throw new IllegalArgumentException();
+        if(comment.length() > 100)
+            return Messages.BUFFEROVF_COMMENT;
         Media requestedMedia = retrieveMedia(mediaID);
         requestedMedia.addComment(comment);
         return Messages.ADDEDCOMMENT;
     }
 
     @Override
-    public String setCover(Media cover) {
+    public String setCover(Media cover) throws RemoteException{
         if (cover == null)
             throw new IllegalArgumentException();
         Media storedMedia;
@@ -244,10 +251,15 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
             }
         }
         if(selectedMedia == null) throw new IllegalStateException();
-        try {
-            currentUser.startStream(selectedMedia, "localhost", 2000);
+        try (ServerSocket mediaServer = new ServerSocket(2001)){
+
+            currentUser.launchMediaPlayer(selectedMedia);
+            currentUser.startStream(selectedMedia, "localhost", 2001);
+            mediaServer.accept();
         } catch (FileNotFoundException e){
             return Messages.MEDIA_NOT_FOUND;
+        } catch (IOException e) {
+            System.err.println("Error connecting to client");
         }
         return Messages.RANDOMPLAY;
 

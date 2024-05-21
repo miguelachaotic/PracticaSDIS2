@@ -2,8 +2,8 @@ package instagram.rmi.server;
 
 import instagram.media.Media;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,23 +21,22 @@ public class ServerLauncher {
         Map<String, String> passwords = new HashMap<>();
         Map<String, Media> directory = new HashMap<>();
 
-        Integer objectId = 0;
+        int objectId = 0;
 
 
         Socket socket;
         InetAddress address;
-        ByteArrayOutputStream bytesOut;
         InstagramServerImpl instagramServer;
 
         try(ServerSocket serverSocket = new ServerSocket(2000)){
             while(true){
                 socket = serverSocket.accept();
-                bytesOut = (ByteArrayOutputStream) socket.getOutputStream();
+                OutputStream outputStream = socket.getOutputStream();
 
-                bytesOut.write(objectId);
+                outputStream.write(objectId);
 
-                bytesOut.flush();
-                bytesOut.close();
+                outputStream.flush();
+                outputStream.close();
 
                 address = socket.getInetAddress();
 

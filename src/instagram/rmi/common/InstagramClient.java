@@ -1,10 +1,11 @@
 package instagram.rmi.common;
 
 import java.io.FileNotFoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import instagram.media.Media;
 
-public interface InstagramClient {
+public interface InstagramClient extends Remote {
 
     /**
      * Lanza el reproductor multimedia en el lado del cliente para que lea el contenido especificado en {@code media}.

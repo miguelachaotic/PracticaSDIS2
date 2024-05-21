@@ -21,12 +21,12 @@ public class ClientStream implements Runnable{
   private final int FILE_PACKET_SIZE;
 
   public ClientStream(Media media, String server, int port, Thread player){
-    this.FILE_TO_RECEIVE = Globals.path_destination+media.getName()+
+    FILE_TO_RECEIVE = Globals.path_destination+media.getName()+
       Globals.file_extension;
-    this.FILE_PACKET_SIZE = Globals.tx_packet_size_bytes;
-    this.serverStreaming = server;
-    this.serverStreamingPort = port;
-    this.activeMediaPlayer = player;
+    FILE_PACKET_SIZE = Globals.tx_packet_size_bytes;
+    serverStreaming = server;
+    serverStreamingPort = port;
+    activeMediaPlayer = player;
   }
 
   public void run(){
@@ -45,11 +45,10 @@ public class ClientStream implements Runnable{
       file.createNewFile(); // if file already exists will do nothing
 
       // receive file
-      byte [] bytes = new byte [FILE_PACKET_SIZE];
+      byte[] bytes = new byte [FILE_PACKET_SIZE];
       fileOutputStream = new FileOutputStream(FILE_TO_RECEIVE);
       bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-      while((bytesRead = inputStream.read(bytes)) > 0 && (activeMediaPlayer.isAlive()))
-      {
+      while((bytesRead = inputStream.read(bytes)) > 0 && (activeMediaPlayer.isAlive())) {
         System.err.print(String.format("\033[%dA",1)); // Move up
         System.err.print("\033[2K"); // Erase line content
         System.err.print("Rcv " + bytesRead + "(pos:" + currentBytes + ") ");
