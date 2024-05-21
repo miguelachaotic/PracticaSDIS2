@@ -1,16 +1,21 @@
 package instagram.rmi.server;
 
+import instagram.media.Globals;
 import instagram.rmi.common.Instagram;
 import instagram.rmi.common.InstagramClient;
 import instagram.rmi.common.InstagramServer;
 import instagram.media.Media;
+import instagram.stream.ServerStream;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.rmi.RemoteException;
+import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class InstagramServerImpl extends UnicastRemoteObject implements InstagramServer, Instagram {
@@ -58,7 +63,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
 
     private final Map<String, Media> directory;
 
-    private InstagramClient currentUser = null;
+    private final Map<String, InstagramClient> connectionMap;
 
 
     private static final String DEFAULTQUEUE = "DEFAULT";
@@ -71,6 +76,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
         this.contents = contents;
         this.passwords = passwords;
         this.directory = directory;
+        this.connectionMap = new ConcurrentHashMap<>();
     }
 
     public InstagramServerImpl(int port, MultiMap<String, Media> contents,
@@ -81,6 +87,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
         this.contents = contents;
         this.passwords = passwords;
         this.directory = directory;
+        this.connectionMap = new ConcurrentHashMap<>();
 
     }
 
@@ -230,9 +237,14 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
 
     @Override
     public boolean setClientStreamReceptor(InstagramClient client) throws RemoteException {
-        if(client == null) return false;
-        currentUser = client;
-        return true;
+        try {
+            if(!connectionMap.containsKey(getClientHost())) {
+                connectionMap.put(getClientHost(), client);
+            }
+            return true;
+        } catch (ServerNotActiveException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -251,24 +263,68 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
             }
         }
         if(selectedMedia == null) throw new IllegalStateException();
-        try (ServerSocket mediaServer = new ServerSocket(2001)){
 
-            currentUser.launchMediaPlayer(selectedMedia);
-            currentUser.startStream(selectedMedia, "localhost", 2001);
-            mediaServer.accept();
-        } catch (FileNotFoundException e){
-            return Messages.MEDIA_NOT_FOUND;
-        } catch (IOException e) {
-            System.err.println("Error connecting to client");
+        try {
+
+            InstagramClient instagramClient = connectionMap.get(selectedMedia.getInternalName());
+
+            ServerStream serverStream = new ServerStream(
+                    "SalsaDelGallo", instagramClient
+            );
+
+
+
+            instagramClient.startStream(selectedMedia, getClientHost(), 3000);
+
+
+
+
+
+        } catch (ServerNotActiveException e) {
+            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        return Messages.RANDOMPLAY;
 
+        return Messages.RANDOMPLAY;
     }
 
     @Override
     public String startMedia(Media media) throws RemoteException, FileNotFoundException {
+
         media = retrieveMedia(media.getInternalName());
-        currentUser.startStream(media, "localhost", 2000);
-        return Messages.STARTMEDIA;
+
+        try {
+
+
+            InstagramClient instagramClient = connectionMap.get(getClientHost());
+            String pathFile = Globals.path_origin + media.getName() + Globals.file_extension;
+            ServerStream serverStream = new ServerStream(pathFile, instagramClient);
+
+
+
+            Thread.sleep(2000);
+
+            instagramClient.launchMediaPlayer(media);
+
+            if(!instagramClient.isMediaPlayerActive()){
+                return "Launcher can't be activated";
+            }
+
+            System.out.println("Sending server streaming ready signal" +
+                    Globals.server_host + ":" + serverStream.getServerSocketPort());
+
+
+            instagramClient.startStream(media, Globals.server_host, serverStream.getServerSocketPort());
+
+            serverStream.run();
+
+        } catch (ServerNotActiveException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return "Media " + media.getName() + " started";
+
     }
+
 }
