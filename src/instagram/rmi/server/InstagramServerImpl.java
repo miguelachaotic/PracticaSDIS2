@@ -269,6 +269,8 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
             String pathFile = Globals.path_origin + media.getName() + Globals.file_extension;
             ServerStream serverStream = new ServerStream(pathFile, instagramClient);
 
+            Thread thread = new Thread(serverStream);
+            thread.start();
             Thread.sleep(2000);
 
             instagramClient.launchMediaPlayer(media);
@@ -280,9 +282,10 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
             System.out.println("Sending server streaming ready signal" +
                     Globals.server_host + ":" + serverStream.getServerSocketPort());
 
-            instagramClient.startStream(media, Globals.server_host, Globals.server_port);
 
-            serverStream.run();
+            instagramClient.startStream(media, Globals.server_host, serverStream.getServerSocketPort());
+
+
 
         } catch (ServerNotActiveException | InterruptedException e) {
             throw new RuntimeException(e);

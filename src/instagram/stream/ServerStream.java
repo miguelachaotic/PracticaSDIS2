@@ -4,6 +4,9 @@ import instagram.media.Globals;
 import instagram.rmi.common.InstagramClient;
 import instagram.rmi.server.Utils;
 
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -32,10 +35,15 @@ public class ServerStream implements Runnable {
 
     public void run() {
         try {
-            ServerSocket servsock = new ServerSocket(Globals.server_port);
-            this.serverSocketPort = servsock.getLocalPort();
+            SSLServerSocketFactory factoriaServer =
+                    (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+            SSLServerSocket socketServidor =
+                    (SSLServerSocket) factoriaServer.createServerSocket(0);
+            this.serverSocketPort = socketServidor.getLocalPort();
+            System.out.println("ServerSocket port = " + this.serverSocketPort);
+            SSLSocket socket = (SSLSocket) socketServidor.accept();
+
             System.out.println("--Stream Waiting...");
-            Socket socket = servsock.accept();
             System.out.println("--Accepted connection : " + socket + "\n");
             Utils.logMsg(streamLog, Utils.nowDate() + Globals.log_stream + socket);
             OutputStream outputStream = null;
@@ -71,7 +79,7 @@ public class ServerStream implements Runnable {
                 outputStream.close();
                 fileInputStream.close();
                 bufferedInputStream.close();
-                servsock.close();
+                socket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();

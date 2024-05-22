@@ -3,6 +3,9 @@ package instagram.stream;
 import instagram.media.Globals;
 import instagram.media.Media;
 
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.Socket;
 
@@ -32,15 +35,24 @@ public class ClientStream implements Runnable {
     }
 
     public void run() {
+        System.out.println("Client port = " + serverStreamingPort);
         int bytesRead;
         int currentBytes = 0;
-        Socket socket = null;
+
+        SSLSocket socket;
+        SSLSocketFactory factoria =
+                (SSLSocketFactory) SSLSocketFactory.getDefault();
+        try {
+            socket = (SSLSocket) factoria.createSocket("localhost", serverStreamingPort);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         InputStream inputStream = null;
         FileOutputStream fileOutputStream = null;
         BufferedOutputStream bufferedOutputStream = null;
         try {
             System.out.println(">> Stream connecting to" + serverStreaming + ":" + serverStreamingPort);
-            socket = new Socket(serverStreaming, serverStreamingPort);
             inputStream = socket.getInputStream();
             File file = new File(FILE_TO_RECEIVE);
             file.getParentFile().mkdirs();
@@ -66,6 +78,7 @@ public class ClientStream implements Runnable {
             System.err.println(e.getMessage());
         } finally {
             try {
+                assert inputStream != null;
                 inputStream.close();
                 bufferedOutputStream.close();
                 fileOutputStream.close();

@@ -32,13 +32,13 @@ public class Globals {
     // Streaming media player config
     public static int player_delay_ms = 3000;
     public static String file_extension = ".mp4";
-    public static String player_command = "firefox";
-    //public static String player_command = "vlc";
+    //public static String player_command = "firefox";
+    public static String player_command = "vlc";
     public static String player_abs_filepath = "./mp4files/destination/";
     // WIN CONFIGS
 //public static String player_command = "wmplayer";
 //public static String player_abs_filepath = "E:\\instagramL4\\mp4files\\destination\\";
 // Streaming setup
-    public static int tx_packet_size_bytes = 32752;
+    public static int tx_packet_size_bytes = 32752*2;
     public static int delivery_delay_ms = 50;
 }
