@@ -29,7 +29,7 @@ public class ServerLauncher {
                 contents, passwords, directory, clientSocketFactory, serverSocketFactory
         );
 
-        Registry registry = LocateRegistry.createRegistry(RMI_PORT);
+        Registry registry = LocateRegistry.createRegistry(RMI_PORT, clientSocketFactory, serverSocketFactory);
 
         registry.rebind("instagramServer", instagramServer);
 
