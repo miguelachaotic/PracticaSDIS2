@@ -1,6 +1,8 @@
 package instagram.media;
+
 /**
  * Static class Globals
+ *
  * @author hector
  */
 public class Globals {

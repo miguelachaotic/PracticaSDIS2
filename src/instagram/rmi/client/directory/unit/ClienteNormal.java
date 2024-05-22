@@ -5,7 +5,8 @@ import instagram.rmi.client.stream.InstagramClientImpl;
 import instagram.rmi.common.Instagram;
 import instagram.rmi.common.InstagramServer;
 
-
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -17,10 +18,13 @@ public class ClienteNormal {
 
     public static final int RMI_PORT = 1099;
 
-
     public static void main(String[] args) throws RemoteException {
 
-        InstagramClientImpl instagramClient = new InstagramClientImpl();
+        SslRMIClientSocketFactory clientSocketFactory = new SslRMIClientSocketFactory();
+
+        SslRMIServerSocketFactory serverSocketFactory = new SslRMIServerSocketFactory();
+
+        InstagramClientImpl instagramClient = new InstagramClientImpl(clientSocketFactory, serverSocketFactory);
 
         try {
             Remote instagramReference = Naming.lookup(
@@ -35,7 +39,6 @@ public class ClienteNormal {
             instagramServer.setClientStreamReceptor(instagramClient);
 
             instagramServer.startMedia(new Media("SalsaDelGallo"));
-
 
         } catch (NotBoundException e) {
             throw new RuntimeException(e);

@@ -13,6 +13,8 @@ import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 
 
 public class InstagramServerImpl extends UnicastRemoteObject implements InstagramServer, Instagram {
@@ -66,35 +68,25 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     private static final String DEFAULTQUEUE = "DEFAULT";
 
     public InstagramServerImpl(MultiMap<String, Media> contents,
-                                  Map<String, String> passwords,
-                                  Map<String, Media> directory
+                               Map<String, String> passwords,
+                               Map<String, Media> directory,
+                               RMIClientSocketFactory rmiClientSocketFactory,
+                               RMIServerSocketFactory rmiServerSocketFactory
     ) throws RemoteException {
-        super();
+        super(0, rmiClientSocketFactory, rmiServerSocketFactory);
         this.contents = contents;
         this.passwords = passwords;
         this.directory = directory;
         this.connectionMap = new ConcurrentHashMap<>();
-    }
-
-    public InstagramServerImpl(int port, MultiMap<String, Media> contents,
-                                  Map<String, String> passwords,
-                                  Map<String, Media> directory
-    ) throws RemoteException {
-        super(port);
-        this.contents = contents;
-        this.passwords = passwords;
-        this.directory = directory;
-        this.connectionMap = new ConcurrentHashMap<>();
-
     }
 
     @Override
-    public String hello() throws RemoteException{
+    public String hello() throws RemoteException {
         return Messages.MSG_BIENVENIDA;
     }
 
     @Override
-    public String auth(String username, String password) throws RemoteException{
+    public String auth(String username, String password) throws RemoteException {
         if (username == null || password == null)
             throw new IllegalArgumentException();
         synchronized (passwords) {
@@ -109,14 +101,14 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public void add2L(Media media) throws RemoteException{
+    public void add2L(Media media) throws RemoteException {
         if (media == null)
             throw new IllegalArgumentException();
         add2L(media, DEFAULTQUEUE);
     }
 
     @Override
-    public void add2L(Media media, String username) throws RemoteException{
+    public void add2L(Media media, String username) throws RemoteException {
         if (media == null || username == null)
             throw new IllegalArgumentException();
         synchronized (directory) {
@@ -130,12 +122,12 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public Media readL() throws RemoteException{
+    public Media readL() throws RemoteException {
         return readL(DEFAULTQUEUE);
     }
 
     @Override
-    public Media readL(String username) throws RemoteException{
+    public Media readL(String username) throws RemoteException {
         if (username == null)
             throw new IllegalArgumentException();
         synchronized (contents) {
@@ -145,12 +137,12 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public Media peekL() throws RemoteException{
+    public Media peekL() throws RemoteException {
         return peekL(DEFAULTQUEUE);
     }
 
     @Override
-    public Media peekL(String username) throws RemoteException{
+    public Media peekL(String username) throws RemoteException {
         if (username == null)
             throw new IllegalArgumentException();
         synchronized (contents) {
@@ -159,7 +151,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public String deleteL(String username) throws RemoteException{
+    public String deleteL(String username) throws RemoteException {
         if (username == null)
             throw new IllegalArgumentException();
         if (username.equals(DEFAULTQUEUE))
@@ -172,7 +164,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public String getDirectoryList() throws RemoteException{
+    public String getDirectoryList() throws RemoteException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append('[');
         synchronized (directory) {
@@ -210,7 +202,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
             throws FileNotFoundException, RemoteException {
         if (comment == null || comment.isEmpty())
             throw new IllegalArgumentException();
-        if(comment.length() > 100)
+        if (comment.length() > 100)
             return Messages.BUFFEROVF_COMMENT;
         Media requestedMedia = retrieveMedia(mediaID);
         requestedMedia.addComment(comment);
@@ -218,7 +210,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     }
 
     @Override
-    public String setCover(Media cover) throws RemoteException{
+    public String setCover(Media cover) throws RemoteException {
         if (cover == null)
             throw new IllegalArgumentException();
         Media storedMedia;
@@ -235,7 +227,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     @Override
     public boolean setClientStreamReceptor(InstagramClient client) throws RemoteException {
         try {
-            if(!connectionMap.containsKey(getClientHost())) {
+            if (!connectionMap.containsKey(getClientHost())) {
                 connectionMap.put(getClientHost(), client);
             }
             return true;
@@ -247,70 +239,48 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     @Override
     public String randomPlay() throws RemoteException {
         Media selectedMedia = null;
-        synchronized (directory){
-            if(directory.isEmpty()) return Messages.EMPTYDIRECTORY;
+        synchronized (directory) {
+            if (directory.isEmpty()) return Messages.EMPTYDIRECTORY;
             int randomIndex = new java.util.Random().nextInt(directory.size());
             int i = 0;
-            for(String mediaID : directory.keySet()){
-                if(i == randomIndex) {
+            for (String mediaID : directory.keySet()) {
+                if (i == randomIndex) {
                     selectedMedia = directory.get(mediaID);
                     break;
                 }
                 i++;
             }
         }
-        if(selectedMedia == null) throw new IllegalStateException();
+        if (selectedMedia == null) throw new IllegalStateException();
 
         try {
-
-            InstagramClient instagramClient = connectionMap.get(selectedMedia.getInternalName());
-
-            ServerStream serverStream = new ServerStream(
-                    "SalsaDelGallo", instagramClient
-            );
-
-
-
-            instagramClient.startStream(selectedMedia, getClientHost(), 3000);
-
-
-
-
-
-        } catch (ServerNotActiveException e) {
-            throw new RuntimeException(e);
+            return startMedia(selectedMedia);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        return Messages.RANDOMPLAY;
+
     }
 
     @Override
     public String startMedia(Media media) throws RemoteException, FileNotFoundException {
 
-        media = retrieveMedia(media.getInternalName());
-
         try {
-
 
             InstagramClient instagramClient = connectionMap.get(getClientHost());
             String pathFile = Globals.path_origin + media.getName() + Globals.file_extension;
             ServerStream serverStream = new ServerStream(pathFile, instagramClient);
 
-
-
             Thread.sleep(2000);
 
             instagramClient.launchMediaPlayer(media);
 
-            if(!instagramClient.isMediaPlayerActive()){
+            if (!instagramClient.isMediaPlayerActive()) {
                 return "Launcher can't be activated";
             }
 
             System.out.println("Sending server streaming ready signal" +
                     Globals.server_host + ":" + serverStream.getServerSocketPort());
-
 
             instagramClient.startStream(media, Globals.server_host, Globals.server_port);
 
