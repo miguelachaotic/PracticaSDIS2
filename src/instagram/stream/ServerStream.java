@@ -31,7 +31,7 @@ public class ServerStream implements Runnable{
 
   public void run(){
     try {
-      ServerSocket servsock = new ServerSocket(0);
+      ServerSocket servsock = new ServerSocket(Globals.server_port);
       this.serverSocketPort = servsock.getLocalPort();
       System.out.println("--Stream Waiting...");
       Socket socket = servsock.accept();

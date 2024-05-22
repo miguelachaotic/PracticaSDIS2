@@ -13,6 +13,7 @@ import java.net.Socket;
 
 public class ClientStream implements Runnable{
 
+
   private final String serverStreaming;
   private final int serverStreamingPort;
   private final Thread activeMediaPlayer;
@@ -61,6 +62,7 @@ public class ClientStream implements Runnable{
       System.out.println(">> File " + FILE_TO_RECEIVE + " downloaded (" + currentBytes + " bytes read)");
     } catch (IOException e) {
       e.printStackTrace();
+      System.err.println(e.getMessage());
     }finally {
       try {
         inputStream.close();

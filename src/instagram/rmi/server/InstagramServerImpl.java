@@ -8,9 +8,6 @@ import instagram.media.Media;
 import instagram.stream.ServerStream;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
@@ -315,7 +312,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
                     Globals.server_host + ":" + serverStream.getServerSocketPort());
 
 
-            instagramClient.startStream(media, Globals.server_host, serverStream.getServerSocketPort());
+            instagramClient.startStream(media, Globals.server_host, Globals.server_port);
 
             serverStream.run();
 
