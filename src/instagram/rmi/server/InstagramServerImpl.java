@@ -235,9 +235,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
     @Override
     public boolean setClientStreamReceptor(InstagramClient client) throws RemoteException {
         try {
-            if(!connectionMap.containsKey(getClientHost())) {
-                connectionMap.put(getClientHost(), client);
-            }
+            connectionMap.put(getClientHost(), client);
             return true;
         } catch (ServerNotActiveException e) {
             throw new RuntimeException(e);
