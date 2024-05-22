@@ -34,11 +34,11 @@ public class Media implements Serializable {
         cover = null;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public String getInternalName(){
+    public String getInternalName() {
         return internalName;
     }
 
@@ -75,7 +75,7 @@ public class Media implements Serializable {
     }
 
     public void addScore(double sc) {
-        score = ( (score * numVotes) + sc) / (++numVotes);
+        score = ((score * numVotes) + sc) / (++numVotes);
     }
 
     public void setCover(ImageIcon img) {
@@ -85,10 +85,10 @@ public class Media implements Serializable {
     public String toString() {
         showCover();
         String msg = "\n\n© " + name + (adultContent ? " [+18]" : " [AP (all public)]") + ".";
-        msg += "\n \u2606" + " " + Math.round(score*100)/100.0 + " (" + numVotes + " votes)";
+        msg += "\n \u2606" + " " + Math.round(score * 100) / 100.0 + " (" + numVotes + " votes)";
         msg += "\n \uD83D\uDC4D" + " " + likes;
         msg += "\n " + comments.size() + " comments found on this media:";
-        for(int i = 0; i < comments.size(); i++) msg += " \n #" + i + ": " + comments.get(i) + ".";
+        for (int i = 0; i < comments.size(); i++) msg += " \n #" + i + ": " + comments.get(i) + ".";
         return msg;
     }
 

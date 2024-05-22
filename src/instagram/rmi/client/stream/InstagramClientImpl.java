@@ -3,6 +3,8 @@ package instagram.rmi.client.stream;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 
 import instagram.media.Globals;
 import instagram.media.Media;
@@ -15,14 +17,16 @@ public class InstagramClientImpl extends UnicastRemoteObject implements Instagra
     private Thread playerThread;
 
 
-    public InstagramClientImpl() throws RemoteException {
-        super();
+    public InstagramClientImpl(
+            RMIClientSocketFactory clientSocketFactory, RMIServerSocketFactory serverSocketFactory
+    ) throws RemoteException {
+        super(0, clientSocketFactory, serverSocketFactory);
     }
 
 
     @Override
     public boolean launchMediaPlayer(Media media) throws RemoteException, FileNotFoundException {
-        try{
+        try {
             MediaPlayer mediaPlayer = new MediaPlayer(
                     Globals.player_command,
                     Globals.player_abs_filepath + media.getName() + Globals.file_extension,
@@ -32,7 +36,7 @@ public class InstagramClientImpl extends UnicastRemoteObject implements Instagra
             playerThread.start();
 
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
