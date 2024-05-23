@@ -30,7 +30,7 @@ public class ClienteNormal {
 
         try {
             Registry instagramRegistry = LocateRegistry.getRegistry(
-                    "localhost", RMI_PORT, clientSocketFactory
+                    Globals.server_host, RMI_PORT, clientSocketFactory
             );
 
             Remote instagramReference = instagramRegistry.lookup("instagramServer");
@@ -39,26 +39,32 @@ public class ClienteNormal {
 
             Instagram instagram = (Instagram) instagramReference;
 
+            System.out.println(instagram);
+
             Media media = new Media("SalsaDelGallo");
 
             instagram.add2L(media);
+
+            System.out.println(instagram.readL());
 
             instagramServer.setClientStreamReceptor(instagramClient);
 
             instagramServer.startMedia(media);
 
-            while(instagramClient.isMediaPlayerActive());
+            while(instagramClient.isMediaPlayerActive()){
+                Thread.sleep(1000); // Esperamos a ver si se ha acabado.
+                // Con thread.sleep evitamos sobrecargar el procesador durmiendo el proceso
+            }
 
-            new File(Globals.path_destination + media.getName() + Globals.file_extension).delete();
-
-            System.exit(0);
 
         } catch (NotBoundException e) {
-            throw new RuntimeException(e);
+            System.err.println("The server is not active right now!");
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("File not found!");
+        } catch (InterruptedException e) {
+            System.err.println("There was a problem with user Threads!!");
+        } finally {
+            System.exit(0);
         }
-
-
     }
 }
