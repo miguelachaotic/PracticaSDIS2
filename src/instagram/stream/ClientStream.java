@@ -42,8 +42,9 @@ public class ClientStream implements Runnable {
         SSLSocket socket;
         SSLSocketFactory factoria =
                 (SSLSocketFactory) SSLSocketFactory.getDefault();
+
         try {
-            socket = (SSLSocket) factoria.createSocket("localhost", serverStreamingPort);
+            socket = (SSLSocket) factoria.createSocket(serverStreaming, serverStreamingPort);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

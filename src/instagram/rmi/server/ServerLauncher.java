@@ -33,6 +33,8 @@ public class ServerLauncher {
 
         registry.rebind("instagramServer", instagramServer);
 
+        System.out.println("Server started!! Waiting for connections.");
+
     }
 
 }

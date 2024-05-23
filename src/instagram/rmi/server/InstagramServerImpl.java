@@ -256,24 +256,23 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     @Override
     public String startMedia(Media media) throws RemoteException, FileNotFoundException {
 
         try {
-
             InstagramClient instagramClient = connectionMap.get(getClientHost());
             String pathFile = Globals.path_origin + media.getName() + Globals.file_extension;
             ServerStream serverStream = new ServerStream(pathFile, instagramClient);
 
             Thread thread = new Thread(serverStream);
-            thread.start();
+
             Thread.sleep(2000);
 
             instagramClient.launchMediaPlayer(media);
+
+            thread.start();
 
             if (!instagramClient.isMediaPlayerActive()) {
                 return "Launcher can't be activated";
@@ -282,17 +281,14 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
             System.out.println("Sending server streaming ready signal" +
                     Globals.server_host + ":" + serverStream.getServerSocketPort());
 
-
             instagramClient.startStream(media, Globals.server_host, serverStream.getServerSocketPort());
-
-
 
         } catch (ServerNotActiveException | InterruptedException e) {
             throw new RuntimeException(e);
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
         return "Media " + media.getName() + " started";
-
     }
 
 }

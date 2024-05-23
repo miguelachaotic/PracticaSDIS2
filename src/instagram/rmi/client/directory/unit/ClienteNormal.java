@@ -28,6 +28,8 @@ public class ClienteNormal {
 
         InstagramClientImpl instagramClient = new InstagramClientImpl(clientSocketFactory, serverSocketFactory);
 
+        System.setProperty("java.rmi.server.hostname", "192.168.245.70");
+
         try {
             Registry instagramRegistry = LocateRegistry.getRegistry(
                     Globals.server_host, RMI_PORT, clientSocketFactory
@@ -63,6 +65,9 @@ public class ClienteNormal {
             System.out.println("File not found!");
         } catch (InterruptedException e) {
             System.err.println("There was a problem with user Threads!!");
+        } catch(Exception e) {
+            System.out.println("Something went wrong!" + e.getMessage());
+            e.printStackTrace();
         } finally {
             System.exit(0);
         }
