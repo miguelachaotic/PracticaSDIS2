@@ -3,5 +3,5 @@ java -cp . -Djavax.net.ssl.trustStore=Client_Truststore.p12 \
   -Dfile.encoding=UTF-8 \
   -Djavax.net.ssl.keyStore=Server_Keystore.p12  \
   -Djavax.net.ssl.keyStorePassword=servidorpass \
-  -Djava.rmi.server.hostname=10.0.200.99 \
-  instagram.rmi.client.directory.unit.ClienteNormal 
+  -Djava.rmi.server.hostname=10.0.200.38 \
+  instagram.rmi.client.stream.unit.PlayStory
