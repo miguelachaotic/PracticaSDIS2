@@ -21,7 +21,7 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
 
     private static final class Messages {
 
-        private static final String MSG_BIENVENIDA = "Bienvenido a Instagram!!";
+        private static final String MSG_BIENVENIDA = "Bienvenido a ";
 
         private static final String MSG_DESPEDIDA = "Hasta luego! Esperamos volver a verte!!";
 
@@ -82,7 +82,8 @@ public class InstagramServerImpl extends UnicastRemoteObject implements Instagra
 
     @Override
     public String hello() throws RemoteException {
-        return Messages.MSG_BIENVENIDA;
+        return Messages.MSG_BIENVENIDA + '\n' + Globals.hello_banner;
+
     }
 
     @Override

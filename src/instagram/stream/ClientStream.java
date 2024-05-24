@@ -39,14 +39,16 @@ public class ClientStream implements Runnable {
         int bytesRead;
         int currentBytes = 0;
 
-        SSLSocket socket;
+        SSLSocket socket = null;
         SSLSocketFactory factoria =
                 (SSLSocketFactory) SSLSocketFactory.getDefault();
 
         try {
+            System.out.println("Connecting to " + serverStreaming + " in port: " + serverStreamingPort);
             socket = (SSLSocket) factoria.createSocket(serverStreaming, serverStreamingPort);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            System.exit(1);
         }
 
         InputStream inputStream = null;

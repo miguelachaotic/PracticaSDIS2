@@ -28,7 +28,7 @@ public class ClienteNormal {
 
         InstagramClientImpl instagramClient = new InstagramClientImpl(clientSocketFactory, serverSocketFactory);
 
-        System.setProperty("java.rmi.server.hostname", "192.168.245.70");
+        System.setProperty("java.rmi.server.hostname", "10.0.200.53");
 
         try {
             Registry instagramRegistry = LocateRegistry.getRegistry(
@@ -40,8 +40,6 @@ public class ClienteNormal {
             InstagramServer instagramServer = (InstagramServer) instagramReference;
 
             Instagram instagram = (Instagram) instagramReference;
-
-            System.out.println(instagram);
 
             Media media = new Media("SalsaDelGallo");
 
