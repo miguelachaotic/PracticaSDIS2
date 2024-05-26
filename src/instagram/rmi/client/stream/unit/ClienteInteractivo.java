@@ -49,6 +49,7 @@ public class ClienteInteractivo {
             do{
                 System.out.print("\n>>");
                 respuesta = miScanner.nextLine();
+                instagramServer.setClientStreamReceptor(instagramClient);
                 respuestaProcesada = procesarRespuesta(respuesta, instagramReference, instagramClient);
             }while (respuestaProcesada);
 
