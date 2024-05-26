@@ -26,7 +26,6 @@ public class PlayRandomStory {
 
         InstagramClientImpl instagramClient = new InstagramClientImpl(clientSocketFactory, serverSocketFactory);
 
-        System.setProperty("java.rmi.server.hostname", "10.0.200.53");
 
         try {
             Registry instagramRegistry = LocateRegistry.getRegistry(
@@ -42,11 +41,16 @@ public class PlayRandomStory {
             Media media1 = new Media("SalsaDelGallo");
             Media media2 = new Media("SalsaViltrumita");
             Media media3 = new Media("CreeperZombie");
+            Media media4 = new Media("Mandanga");
+            Media media5 = new Media("GataBajoLaLluvia");
 
 
             instagram.add2L(media1);
             instagram.add2L(media2);
             instagram.add2L(media3);
+            instagram.add2L(media4);
+            instagram.add2L(media5);
+
 
             instagramServer.setClientStreamReceptor(instagramClient);
 

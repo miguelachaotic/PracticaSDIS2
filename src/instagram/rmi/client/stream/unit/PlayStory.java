@@ -27,7 +27,6 @@ public class PlayStory {
 
         InstagramClientImpl instagramClient = new InstagramClientImpl(clientSocketFactory, serverSocketFactory);
 
-        System.setProperty("java.rmi.server.hostname", "10.0.200.53");
 
         try {
             Registry instagramRegistry = LocateRegistry.getRegistry(

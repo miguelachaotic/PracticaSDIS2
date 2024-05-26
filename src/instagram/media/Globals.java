@@ -25,10 +25,10 @@ public class Globals {
     public static String log_stream = " [STREAM] Streaming to: ";
     public static String log_stream_end = " [STREAM] Stream finished. Tx Bytes: ";
     // Streaming paths
-    public static String server_host = "10.0.200.99";
+    public static String server_host = "127.0.0.1";
     public static int server_port = 20099;
     public static String path_origin = "./mp4files/origin/";
-    public static String path_destination = "./mp4files/origin/";
+    public static String path_destination = "./mp4files/destination/";
     // Streaming media player config
     public static int player_delay_ms = 3000;
     public static String file_extension = ".mp4";
