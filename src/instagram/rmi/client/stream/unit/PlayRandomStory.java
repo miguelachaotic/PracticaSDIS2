@@ -20,6 +20,10 @@ public class PlayRandomStory {
 
     public static void main(String[] args) throws RemoteException {
 
+        if(args.length != 1) return;
+
+        Globals.server_host = args[0];
+
         SslRMIClientSocketFactory clientSocketFactory = new SslRMIClientSocketFactory();
 
         SslRMIServerSocketFactory serverSocketFactory = new SslRMIServerSocketFactory();

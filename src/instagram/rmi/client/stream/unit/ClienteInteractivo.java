@@ -22,6 +22,10 @@ public class ClienteInteractivo {
 
     public static void main(String[] args) throws RemoteException {
 
+        if (args.length != 1) return;
+
+        Globals.server_host = args[0];
+
         SslRMIClientSocketFactory clientSocketFactory = new SslRMIClientSocketFactory();
 
         SslRMIServerSocketFactory serverSocketFactory = new SslRMIServerSocketFactory();
@@ -30,34 +34,27 @@ public class ClienteInteractivo {
 
 
         try {
-            Registry instagramRegistry = LocateRegistry.getRegistry(
-                    Globals.server_host, RMI_PORT, clientSocketFactory
-            );
+            Registry instagramRegistry = LocateRegistry.getRegistry(Globals.server_host, RMI_PORT, clientSocketFactory);
 
             Remote instagramReference = instagramRegistry.lookup("instagramServer");
 
             InstagramServer instagramServer = (InstagramServer) instagramReference;
 
-            Instagram instagram = (Instagram) instagramReference;
-
-            instagramServer.setClientStreamReceptor(instagramClient);
-
             System.out.println("Introduzca EXIT para salir");
             Scanner miScanner = new Scanner(System.in);
             boolean respuestaProcesada = true;
             String respuesta = null;
-            do{
+            do {
                 System.out.print("\n>>");
                 respuesta = miScanner.nextLine();
                 instagramServer.setClientStreamReceptor(instagramClient);
                 respuestaProcesada = procesarRespuesta(respuesta, instagramReference, instagramClient);
-            }while (respuestaProcesada);
-
+            } while (respuestaProcesada);
 
 
         } catch (NotBoundException e) {
             System.err.println("The server is not active right now!");
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Something went wrong!" + e.getMessage());
             e.printStackTrace();
         } finally {
@@ -72,7 +69,7 @@ public class ClienteInteractivo {
 
         String[] respuestas = respuesta.split(" ");
 
-        switch (respuestas[0]){
+        switch (respuestas[0]) {
             case "HELLO":
                 System.out.println("<<" + instagram.hello());
                 return true;
@@ -83,28 +80,28 @@ public class ClienteInteractivo {
 
             case "ADD2L":
                 Media mediaAnadida = new Media(respuestas[1]);
-                if(respuestas.length>2) {
+                if (respuestas.length > 2) {
                     String username = respuestas[2];
                     instagram.add2L(mediaAnadida, username);
-                }else{
+                } else {
                     instagram.add2L(mediaAnadida);
                 }
                 return true;
 
             case "READL":
-                if(respuestas.length>1){
+                if (respuestas.length > 1) {
                     System.out.println("<< SE HA LEIDO:\n" + instagram.readL(respuestas[1]));
 
-                }else{
+                } else {
                     System.out.println("<< SE HA LEIDO:\n" + instagram.readL());
                 }
                 return true;
 
             case "PEEKL":
-                if(respuestas.length>1){
+                if (respuestas.length > 1) {
                     System.out.println("<< MEDIA PEEKED:\n" + instagram.peekL(respuestas[1]));
 
-                }else{
+                } else {
                     System.out.println("<< MEDIA PEEKED:\n" + instagram.peekL());
                 }
                 return true;
@@ -136,7 +133,7 @@ public class ClienteInteractivo {
 
             case "RANDOMPLAY":
                 instagramServer.randomPlay();
-                while(instagramClient.isMediaPlayerActive()){
+                while (instagramClient.isMediaPlayerActive()) {
                     Thread.sleep(1000); // Esperamos a ver si se ha acabado.
                     // Con thread.sleep evitamos sobrecargar el procesador durmiendo el proceso
                 }
@@ -146,7 +143,7 @@ public class ClienteInteractivo {
                 Media mediaReproducida = new Media(respuestas[1]);
                 instagramServer.startMedia(mediaReproducida);
 
-                while(instagramClient.isMediaPlayerActive()){
+                while (instagramClient.isMediaPlayerActive()) {
                     Thread.sleep(1000); // Esperamos a ver si se ha acabado.
                     // Con thread.sleep evitamos sobrecargar el procesador durmiendo el proceso
                 }

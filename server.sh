@@ -3,5 +3,5 @@ java -cp . -Djavax.net.ssl.keyStore=Server_Keystore.p12 \
   -Dfile.encoding=UTF-8 \
   -Djavax.net.ssl.trustStore=Client_Truststore.p12 \
   -Djavax.net.ssl.trustStorePassword=clientepass \
-  -Djava.rmi.server.hostname=192.168.43.190 \
-  instagram.rmi.server.ServerLauncher
+  -Djava.rmi.server.hostname=$1 \
+  instagram.rmi.server.ServerLauncher $1 

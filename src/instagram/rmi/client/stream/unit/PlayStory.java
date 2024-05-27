@@ -21,6 +21,10 @@ public class PlayStory {
 
     public static void main(String[] args) throws RemoteException {
 
+        Globals.server_host = args[0];
+
+        Media media = new Media(args[1]);
+
         SslRMIClientSocketFactory clientSocketFactory = new SslRMIClientSocketFactory();
 
         SslRMIServerSocketFactory serverSocketFactory = new SslRMIServerSocketFactory();
@@ -37,18 +41,9 @@ public class PlayStory {
 
             InstagramServer instagramServer = (InstagramServer) instagramReference;
 
-            Instagram instagram = (Instagram) instagramReference;
-
-            Media media = new Media("SalsaDelGallo");
-            Media media2 = new Media("GataBajoLaLluvia");
-
-
-            instagram.add2L(media);
-            instagram.add2L(media2);
-
             instagramServer.setClientStreamReceptor(instagramClient);
 
-            instagramServer.startMedia(media2);
+            instagramServer.startMedia(media);
 
             while(instagramClient.isMediaPlayerActive()){
                 Thread.sleep(1000); // Esperamos a ver si se ha acabado.

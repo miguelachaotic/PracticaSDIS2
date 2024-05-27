@@ -1,5 +1,6 @@
 package instagram.rmi.server;
 
+import instagram.media.Globals;
 import instagram.media.Media;
 
 import java.rmi.RemoteException;
@@ -21,6 +22,14 @@ public class ServerLauncher {
         Map<String, String> passwords = new HashMap<>();
         Map<String, Media> directory = new HashMap<>();
 
+        if(args.length != 1){
+            System.err.println("Usage: java ServerLauncher <path to RMI registry>");
+            System.exit(1);
+        }
+
+        Globals.server_host = args[0];
+
+
         SslRMIServerSocketFactory serverSocketFactory = new SslRMIServerSocketFactory();
 
         SslRMIClientSocketFactory clientSocketFactory = new SslRMIClientSocketFactory();
@@ -28,6 +37,12 @@ public class ServerLauncher {
         InstagramServerImpl instagramServer = new InstagramServerImpl(
                 contents, passwords, directory, clientSocketFactory, serverSocketFactory
         );
+
+        instagramServer.add2L(new Media("CreeperZombie"));
+        instagramServer.add2L(new Media("GataBajoLaLluvia"));
+        instagramServer.add2L(new Media("Mandanga"));
+        instagramServer.add2L(new Media("SalsaDelGallo"));
+        instagramServer.add2L(new Media("SalsaViltrumita"));
 
         Registry registry = LocateRegistry.createRegistry(RMI_PORT, clientSocketFactory, serverSocketFactory);
 
