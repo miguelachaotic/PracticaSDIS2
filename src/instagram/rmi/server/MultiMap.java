@@ -72,15 +72,5 @@ public class MultiMap<K, V> {
         return mapaContenido.get(key).peek();
     }
 
-    public Queue<V> getQueue(K key) {
-        if (!mapaContenido.containsKey(key))
-            throw new IllegalArgumentException();
-        return mapaContenido.get(key);
-    }
-
-    public Set<K> keySet() {
-        return mapaContenido.keySet();
-    }
-
 
 }

@@ -118,15 +118,15 @@ public class ClienteInteractivo {
                 return true;
 
             case "RETRIEVEMEDIA":
-                System.out.println("<< MEDIA RETRIEVED:\n" + instagram.retrieveMedia(respuestas[1]));
+                System.out.println("<< MEDIA RETRIEVED:\n" + instagram.retrieveMedia(new Media(respuestas[1]).getInternalName()));
                 return true;
 
             case "ADDLIKE":
-                System.out.println("<<" + instagram.addLike(respuestas[1]));
+                System.out.println("<<" + instagram.addLike(new Media(respuestas[1]).getInternalName()));
                 return true;
 
             case "ADDCOMMENT":
-                System.out.println("<<" + instagram.addComment(respuestas[1], respuestas[2]));
+                System.out.println("<<" + instagram.addComment(new Media(respuestas[1]).getInternalName(), respuestas[2]));
                 return true;
 
             case "SETCOVER":
