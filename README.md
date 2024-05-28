@@ -30,7 +30,14 @@ javac $(find . -name "*.java") -d .
 
 Para lanzar el servidor dispones del script **_server.sh_**. Este script recibe un argumento obligatorio que es la dirección IP que usa el servidor para recibir conexiones. El proyecto debe estar compilado antes de ejecutar este comando.
 
-Ante cualquier duda dispone del argumento *_-h_* o *_--help_* 
+Ante cualquier duda dispone del argumento *_-h_* o *_--help_*.
+
+Un ejemplo de ejecución en local de este script es de la siguiente forma:
+
+```
+./server.sh 127.0.0.1
+```
+
 
 ## Cliente
 
