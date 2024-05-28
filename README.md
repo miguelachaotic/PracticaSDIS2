@@ -4,7 +4,7 @@
 
 Este proyecto es la segunda práctica de la asignatura Sistemas Distribuidos de la Universidad de Valladolid, España. Usa la tecnología Java RMI.
 Consiste en una aplicación cliente - servidor de plataforma de contenidos. El servidor dispone de unos videos que los usuarios pueden solicitar. 
-Los usuarios también pueden subir al servidor objetos 'Media' que representan una publicación abstracta. Para interactuar con el Servidor se disponen de dos scripts para ejecutar los archivos de forma sencilla. El servidor dispone de unos videos iniciales, ya disponibles desde el lanzamiento, con los siguientes nombres: SalsaDelGallo, Patatas, CreeperZombie y SalsaViltrumita.
+Los usuarios también pueden subir al servidor objetos 'Media' que representan una publicación abstracta. Para interactuar con el Servidor se disponen de dos scripts para ejecutar los archivos de forma sencilla.
 
 ## Requerimientos
 
