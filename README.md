@@ -43,7 +43,21 @@ Un ejemplo de ejecución en local de este script es de la siguiente forma:
 
 ### Stream
 
-Para usar las funciones de Stream, más una función adicional que consiste en un cliente interactivo usaremos el script
+Para usar las funciones de Stream, más una función adicional que consiste en un cliente interactivo usaremos el script **_stream.sh_**.
+
+Este script es ligeramente más complicado. Para que funcione correctamente son necesarios 3 argumentos obligatorios siempre. El primero de ellos es la clase a ejecutar, o el cliente que se desea ejecutar. Hay 4 de ellos:
+
+- ClienteInteractivo
+- PlayList
+- PlayRandomStory
+- PlayStory <Media>
+
+Los otros dos argumentos son respectivamente la IP del cliente y la IP del servidor. En el caso de PlayStory recibe un argumento adicional que es el contenido que se quiere reproducir.
+
+Importante pasar el nombre de la clase sin la extensión '.class'.  Un ejemplo de ejecución suponiendo que el cliente tiene la IP *_192.168.1.20_* y la IP del servidor es *_192.168.1.50_*:
+```
+./stream.sh ClienteInteractivo 192.168.1.20 192.168.1.50
+```
 
 
 
