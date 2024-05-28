@@ -8,6 +8,8 @@ Los usuarios también pueden subir al servidor objetos 'Media' que representan u
 
 ## Requerimientos
 
+Funciona en cualquier versión de Java desde la 11, por lo que es necesario tener jdk11 y el soporte de ejecución de Java 11.
+
 Una vez clonado el repositorio en tu máquina, sitúate en el repositorio clonado y compila el proyecto con el siguiente comando:
 
 ```
