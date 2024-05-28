@@ -8,4 +8,8 @@ Los usuarios también pueden subir al servidor objetos 'Media' que representan u
 
 ## Requerimientos
 
-Una vez clonado el repositorio en tu máquina debes compilar el código fuente java con el siguiente comando:
+Una vez clonado el repositorio en tu máquina, sitúate en el repositorio clonado y compila el proyecto con el siguiente comando:
+
+```
+javac $(find . -name "*.java") -d .
+```
