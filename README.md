@@ -59,6 +59,8 @@ Importante pasar el nombre de la clase sin la extensión '.class'.  Un ejemplo d
 ./stream.sh ClienteInteractivo 192.168.1.20 192.168.1.50
 ```
 
+También admite los argumentos *_-h_* y *_--help_* para información adicional.
+
 ### Directory
 
 Para usar el resto de funciones, distintas del streaming, se usa el script **_unit.sh_**.
@@ -66,7 +68,7 @@ Para usar el resto de funciones, distintas del streaming, se usa el script **_un
 Este script requiere los mismos argumentos obligatorios que el anterior, nombre de la clase, dirección IP del cliente y dirección IP del servidor. Las clases disponibles junto con sus argumentos
 son las siguientes.
 
-- Add2l <Media> [Username]
+- Add2l \<Media\> [Username]
 - 
 
 
