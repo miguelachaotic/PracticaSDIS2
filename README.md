@@ -50,7 +50,7 @@ Este script es ligeramente más complicado. Para que funcione correctamente son 
 - ClienteInteractivo
 - PlayList
 - PlayRandomStory
-- PlayStory <Media>
+- PlayStory \<Media\>
 
 Los otros dos argumentos son respectivamente la IP del cliente y la IP del servidor. En el caso de PlayStory recibe un argumento adicional que es el contenido que se quiere reproducir.
 
