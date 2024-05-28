@@ -24,6 +24,39 @@ Una vez clonado el repositorio en tu máquina, sitúate en el repositorio clonad
 javac $(find . -name "*.java") -d .
 ```
 
+# Uso de los programas
+
+## Servidor
+
+Para lanzar el servidor dispones del script **_server.sh_**. Este script recibe un argumento obligatorio que es la dirección IP que usa el servidor para recibir conexiones. El proyecto debe estar compilado antes de ejecutar este comando.
+
+Ante cualquier duda dispone del argumento *_-h_* o *_--help_* 
+
+## Cliente
+
+### Stream
+
+Para usar las funciones de Stream, más una función adicional que consiste en un cliente interactivo usaremos el script
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
