@@ -12,6 +12,12 @@ Funciona en cualquier versión de Java desde la 11, por lo que es necesario tene
 
 ## Instalación
 
+Primero, clona el repositorio en tu máquina local. Requiere tener git instalado en local.
+
+```
+git clone https://miguelachaotic/PracticaSDIS2
+```
+
 Una vez clonado el repositorio en tu máquina, sitúate en el repositorio clonado y compila el proyecto con el siguiente comando:
 
 ```
