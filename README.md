@@ -65,13 +65,22 @@ También admite los argumentos *_-h_* y *_--help_* para información adicional.
 
 Para usar el resto de funciones, distintas del streaming, se usa el script **_unit.sh_**.
 
-Este script requiere los mismos argumentos obligatorios que el anterior, nombre de la clase, dirección IP del cliente y dirección IP del servidor. Las clases disponibles junto con sus argumentos
-son las siguientes.
+Este script requiere los mismos argumentos obligatorios que el anterior, nombre de la clase, dirección IP del cliente y dirección IP del servidor. Si coloco un argumento entre los símbolos \< \> es que es un argumento obligatorio para esa clase. Si en cambio está entre [ ] entonces es un argumento opcional.
+Las clases disponibles junto con sus argumentos son las siguientes:
 
 - Add2l \<Media\> [Username]
-- 
+- AddComment \<Media\> "\<Comment\>"
+- AddLike \<Media\>
+- Auth \<Username\> \<Password\>
+- Deletel \<Username\>
+- GetDirectoryList
+- Hello
+- Peekl [Username]
+- Readl [Username]
+- RetrieveMedia \<Media\>
 
 
+Este script también dispone de los argumentos *_-h_* y *_--help_* para más información.
 
 
 
